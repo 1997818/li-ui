@@ -7,5 +7,5 @@ export const LiCheckbox = defineCustomElement(LiCheckboxEle);
 
 export function register() {
   customElements.define("li-table", LiTable);
-  customElements.define("li-checkbox", LiCheckbox);
+  customElements.define("li-check", LiCheckbox);
 }

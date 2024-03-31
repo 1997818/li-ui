@@ -35,25 +35,25 @@ const tableData: any[] = [
     date: "2016-05-02",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
-    checkd: true,
+    checked: true,
   },
   {
     date: "2016-05-04",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
-    checkd: true,
+    checked: false,
   },
   {
     date: "2016-05-01",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
-    checkd: false,
+    checked: false,
   },
   {
     date: "2016-05-03",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
-    checkd: false,
+    checked: false,
   },
 ];
 </script>
@@ -67,6 +67,7 @@ export default {
 <template>
   <div>
     <li-table :tableConfig="table" :tableData="tableData"></li-table>
+    <li-check label="复选框A"></li-check>
   </div>
 </template>
 

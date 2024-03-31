@@ -23,7 +23,7 @@ const thEle = (props: { item: LiTableConfigItem }) => {
   let thDom: any;
   switch (item.type) {
     case TableType.Checked:
-      thDom = <li-checkbox indeterminate={indeterminate.value}></li-checkbox>;
+      thDom = <li-check indeterminate={indeterminate.value}></li-check>;
       break;
 
     default:
@@ -38,9 +38,12 @@ let tableData = props.tableData;
 <script lang="tsx">
 export default defineComponent({
   data() {
-    return { a: "ad" };
+    return { a: true };
   },
   mounted() {},
+  methods: {
+    changeRowCheck(val: boolean) {},
+  },
 });
 </script>
 
@@ -67,11 +70,12 @@ export default defineComponent({
           <tr v-for="(data, index) in props.tableData" :key="index">
             <td v-for="option in tableConfig" :key="option.key">
               <div class="center" :class="option.style">
-                <li-checkbox
+                <li-check
                   v-if="option.type == TableType.Checked"
-                  v-model="a"
+                  v-model="tableData[index].checked"
+                  @change="changeRowCheck($event.detail[0])"
                 >
-                </li-checkbox>
+                </li-check>
                 <template v-else> {{ data[option.key] }}</template>
               </div>
             </td>
