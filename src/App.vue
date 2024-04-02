@@ -61,12 +61,19 @@ const tableData: any[] = [
 <script lang="ts">
 export default {
   data() {},
+  methods: {
+    changeRowCheck(val: any) {},
+  },
 };
 </script>
 
 <template>
   <div>
-    <li-table :tableConfig="table" :tableData="tableData"></li-table>
+    <li-table
+      :tableConfig="table"
+      :tableData="tableData"
+      @changeRowCheck="changeRowCheck($event.detail[0])"
+    ></li-table>
     <li-check label="复选框A"></li-check>
   </div>
 </template>

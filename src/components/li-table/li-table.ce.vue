@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { defineComponent, ref } from "vue";
+import { defineEmits, type Ref, ref, reactive } from "vue";
 import type { LiTableConfigItem } from "./li-table.config";
 import { TableType } from "./li-table.config";
 
@@ -7,7 +7,15 @@ const props = defineProps<{
   tableConfig: LiTableConfigItem[];
   tableData: any[];
 }>();
-let indeterminate = ref(false);
+
+const emits = defineEmits(["changeRowCheck"]);
+let allChecked = ref(props.tableData.every((item) => item.checked === true)); // 全选
+let indeterminate = props.tableData.some(
+  (item) => item.checked === true && !allChecked.value
+); // 半选
+let checkedRow: Array<boolean | "disable"> = reactive(
+  props.tableData.map((item) => item.checked)
+);
 const Colgroup = () => {
   return (
     <colgroup>
@@ -23,7 +31,13 @@ const thEle = (props: { item: LiTableConfigItem }) => {
   let thDom: any;
   switch (item.type) {
     case TableType.Checked:
-      thDom = <li-check indeterminate={indeterminate.value}></li-check>;
+      thDom = (
+        <li-check
+          onChange={setAllRowCheck}
+          checked={allChecked}
+          indeterminate={indeterminate}
+        ></li-check>
+      );
       break;
 
     default:
@@ -33,18 +47,35 @@ const thEle = (props: { item: LiTableConfigItem }) => {
   return thDom;
 };
 let tableData = props.tableData;
+const changeRowCheck = (val: boolean, i: number) => {
+  checkedRow[i] = val;
+  const tableData = props.tableData.map((item, i) => {
+    item.checked = checkedRow[i];
+    return item;
+  });
+  emits("changeRowCheck", tableData);
+};
+
+const setAllRowCheck = () => {
+  allChecked.value = !allChecked.value;
+  console.log(allChecked);
+  checkedRow = checkedRow.map((item) => {
+    if (item != "disable") {
+      item = allChecked.value;
+    }
+    return item;
+  });
+  const tableData = props.tableData.map((item, i) => {
+    item.checked = checkedRow[i];
+    return item;
+  });
+
+  emits("changeRowCheck", tableData);
+};
 </script>
 
 <script lang="tsx">
-export default defineComponent({
-  data() {
-    return { a: true };
-  },
-  mounted() {},
-  methods: {
-    changeRowCheck(val: boolean) {},
-  },
-});
+export default {};
 </script>
 
 <template>
@@ -67,13 +98,13 @@ export default defineComponent({
       <table cellspacing="0" cellpadding="0" border="0" class="table">
         <Colgroup></Colgroup>
         <tbody>
-          <tr v-for="(data, index) in props.tableData" :key="index">
+          <tr v-for="(data, index) in tableData" :key="index">
             <td v-for="option in tableConfig" :key="option.key">
               <div class="center" :class="option.style">
                 <li-check
                   v-if="option.type == TableType.Checked"
-                  v-model="tableData[index].checked"
-                  @change="changeRowCheck($event.detail[0])"
+                  :checked="allChecked"
+                  @change="changeRowCheck($event.detail[0], index)"
                 >
                 </li-check>
                 <template v-else> {{ data[option.key] }}</template>
