@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { defineEmits, type Ref, ref, reactive } from "vue";
+import { defineEmits, type Ref, ref, reactive, onMounted } from "vue";
 import type { LiTableConfigItem } from "./li-table.config";
 import { TableType } from "./li-table.config";
 
@@ -16,6 +16,7 @@ let indeterminate = props.tableData.some(
 let checkedRow: Array<boolean | "disable"> = reactive(
   props.tableData.map((item) => item.checked)
 );
+
 const Colgroup = () => {
   return (
     <colgroup>
@@ -57,8 +58,7 @@ const changeRowCheck = (val: boolean, i: number) => {
 };
 
 const setAllRowCheck = () => {
-  allChecked.value = !allChecked.value;
-  console.log(allChecked);
+  !allChecked.value;
   checkedRow = checkedRow.map((item) => {
     if (item != "disable") {
       item = allChecked.value;
@@ -103,7 +103,7 @@ export default {};
               <div class="center" :class="option.style">
                 <li-check
                   v-if="option.type == TableType.Checked"
-                  :checked="allChecked"
+                  :checked="checkedRow[index]"
                   @change="changeRowCheck($event.detail[0], index)"
                 >
                 </li-check>
