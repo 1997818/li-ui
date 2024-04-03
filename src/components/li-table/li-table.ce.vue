@@ -1,5 +1,7 @@
 <script setup lang="tsx">
-import { defineEmits, type Ref, ref, reactive, onMounted } from "vue";
+import { defineEmits, type Ref, ref, reactive, onMounted, toRefs } from "vue";
+import { getCurrentInstance } from "vue";
+
 import type { LiTableConfigItem } from "./li-table.config";
 import { TableType } from "./li-table.config";
 
@@ -48,28 +50,30 @@ const thEle = (props: { item: LiTableConfigItem }) => {
   return thDom;
 };
 let tableData = props.tableData;
+const checkedRefs = ref<any>([]);
 const changeRowCheck = (val: boolean, i: number) => {
   checkedRow[i] = val;
   const tableData = props.tableData.map((item, i) => {
     item.checked = checkedRow[i];
     return item;
   });
+
   emits("changeRowCheck", tableData);
 };
 
 const setAllRowCheck = () => {
   !allChecked.value;
-  checkedRow = checkedRow.map((item) => {
+  checkedRow.forEach((item, i) => {
     if (item != "disable") {
-      item = allChecked.value;
+      checkedRow[i] = allChecked.value;
     }
-    return item;
   });
+  console.log(checkedRefs.value[1]);
+
   const tableData = props.tableData.map((item, i) => {
     item.checked = checkedRow[i];
     return item;
   });
-
   emits("changeRowCheck", tableData);
 };
 </script>
@@ -102,6 +106,7 @@ export default {};
             <td v-for="option in tableConfig" :key="option.key">
               <div class="center" :class="option.style">
                 <li-check
+                  ref="checkedRefs"
                   v-if="option.type == TableType.Checked"
                   :checked="checkedRow[index]"
                   @change="changeRowCheck($event.detail[0], index)"

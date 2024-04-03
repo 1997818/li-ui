@@ -1,9 +1,29 @@
+<script setup lang="ts">
+import { ref } from "vue";
+const props = defineProps<{
+  indeterminate: boolean;
+  checked: boolean;
+  label: string;
+}>();
+const emits = defineEmits(["change"]);
+let checkedRef = ref(props.checked);
+
+let indeterminate = props.indeterminate;
+const chengeChecked = () => {
+  checkedRef.value = !checkedRef.value;
+  emits("change", checkedRef);
+};
+defineExpose({
+  checkedRef,
+});
+</script>
+
 <template>
   <label
     class="li-checkbox"
     :class="{
-      is_checked: checked,
-      is_indeterminate: indeterminate && !checked,
+      is_checked: checkedRef,
+      is_indeterminate: indeterminate && !checkedRef,
     }"
   >
     <span class="checkbox_input">
@@ -13,37 +33,10 @@
     <span
       v-if="props.label"
       class="checkbox_label"
-      :class="{ is_checked: checked || indeterminate }"
+      :class="{ is_checked: checkedRef || indeterminate }"
       >{{ props.label }}</span
     >
   </label>
 </template>
-
-<script setup lang="ts">
-const props = defineProps<{
-  indeterminate: boolean;
-  checked: boolean;
-  label: string;
-}>();
-</script>
-
-<script lang="ts">
-export default {
-  data() {
-    const { checked, indeterminate } = this.$props;
-    return {
-      checked,
-      indeterminate,
-    };
-  },
-  mounted() {},
-  methods: {
-    chengeChecked() {
-      this.checked = !this.checked;
-      this.$emit("change", this.checked);
-    },
-  },
-};
-</script>
 
 <style lang="scss" src="./li-checkbox.scss" scoped></style>
