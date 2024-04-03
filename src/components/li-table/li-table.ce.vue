@@ -12,8 +12,8 @@ const props = defineProps<{
 
 const emits = defineEmits(["changeRowCheck"]);
 let allChecked = ref(props.tableData.every((item) => item.checked === true)); // 全选
-let indeterminate = props.tableData.some(
-  (item) => item.checked === true && !allChecked.value
+let indeterminate = ref(
+  props.tableData.some((item) => item.checked === true && !allChecked.value)
 ); // 半选
 let checkedRow: Array<boolean | "disable"> = reactive(
   props.tableData.map((item) => item.checked)
@@ -38,7 +38,7 @@ const thEle = (props: { item: LiTableConfigItem }) => {
         <li-check
           onChange={setAllRowCheck}
           checked={allChecked}
-          indeterminate={indeterminate}
+          indeterminate={indeterminate.value}
         ></li-check>
       );
       break;
@@ -63,13 +63,12 @@ const changeRowCheck = (val: boolean, i: number) => {
 
 const setAllRowCheck = () => {
   !allChecked.value;
+  indeterminate.value = false;
   checkedRow.forEach((item, i) => {
     if (item != "disable") {
       checkedRow[i] = allChecked.value;
     }
   });
-  console.log(checkedRefs.value[1]);
-
   const tableData = props.tableData.map((item, i) => {
     item.checked = checkedRow[i];
     return item;

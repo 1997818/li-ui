@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 const props = defineProps<{
   indeterminate: boolean;
   checked: boolean;
@@ -13,9 +13,18 @@ const chengeChecked = () => {
   checkedRef.value = !checkedRef.value;
   emits("change", checkedRef);
 };
-defineExpose({
-  checkedRef,
-});
+watch(
+  () => props.checked,
+  (newValue) => {
+    checkedRef.value = newValue;
+  }
+);
+watch(
+  () => props.indeterminate,
+  (newValue) => {
+    indeterminate = newValue;
+  }
+);
 </script>
 
 <template>
