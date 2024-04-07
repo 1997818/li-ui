@@ -11,7 +11,7 @@ let checkedRef = ref(props.checked);
 let indeterminate = props.indeterminate;
 const chengeChecked = () => {
   checkedRef.value = !checkedRef.value;
-  emits("change", checkedRef);
+  emits("change", checkedRef.value);
 };
 watch(
   () => props.checked,

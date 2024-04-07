@@ -1,16 +1,19 @@
 <script setup lang="tsx">
-import { defineEmits, type Ref, ref, reactive, onMounted, toRefs } from "vue";
-import { getCurrentInstance } from "vue";
-
+import { defineEmits, ref, reactive } from "vue";
 import type { LiTableConfigItem } from "./li-table.config";
 import { TableType } from "./li-table.config";
 
 const props = defineProps<{
   tableConfig: LiTableConfigItem[];
   tableData: any[];
+  sortKey: {
+    key: string;
+    order: "desc" | "asc";
+  };
 }>();
+let sortKey = ref(props.sortKey);
 
-const emits = defineEmits(["changeRowCheck"]);
+const emits = defineEmits(["changeRowCheck", "sortCheck"]);
 let allChecked = ref(props.tableData.every((item) => item.checked === true)); // 全选
 let indeterminate = ref(
   props.tableData.some((item) => item.checked === true && !allChecked.value)
@@ -42,7 +45,29 @@ const thEle = (props: { item: LiTableConfigItem }) => {
         ></li-check>
       );
       break;
-
+    case TableType.Sort:
+      thDom = (
+        <div onClick={() => changeSort(item)}>
+          {item.name}
+          <span class={"caret-wrapper"}>
+            <i
+              class={
+                sortKey.value.key == item.key && sortKey.value.order == "asc"
+                  ? "sort-caret ascending ascending-active"
+                  : "sort-caret ascending"
+              }
+            ></i>
+            <i
+              class={
+                sortKey.value.key == item.key && sortKey.value.order == "desc"
+                  ? "sort-caret descending descending-active"
+                  : "sort-caret descending"
+              }
+            ></i>
+          </span>
+        </div>
+      );
+      break;
     default:
       thDom = item.name;
       break;
@@ -50,7 +75,6 @@ const thEle = (props: { item: LiTableConfigItem }) => {
   return thDom;
 };
 let tableData = props.tableData;
-const checkedRefs = ref<any>([]);
 const changeRowCheck = (val: boolean, i: number) => {
   checkedRow[i] = val;
   const tableData = props.tableData.map((item, i) => {
@@ -58,6 +82,22 @@ const changeRowCheck = (val: boolean, i: number) => {
     return item;
   });
 
+  const isAllChecked = checkedRow.every((item) => item);
+  const unChecked = checkedRow.every((item) => !item);
+  const someChecked = checkedRow.some((item) => item);
+  // 是否全选
+  if (isAllChecked) {
+    allChecked.value = true;
+  }
+  // 是否全不选
+  if (unChecked) {
+    allChecked.value = false;
+  }
+  // 是否半选
+  if (someChecked && !isAllChecked) {
+    allChecked.value = false;
+    indeterminate.value = true;
+  }
   emits("changeRowCheck", tableData);
 };
 
@@ -74,6 +114,16 @@ const setAllRowCheck = () => {
     return item;
   });
   emits("changeRowCheck", tableData);
+};
+
+const changeSort = (val: LiTableConfigItem) => {
+  if (sortKey.value.key == val.key) {
+    sortKey.value.order = sortKey.value.order == "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value.key = val.key;
+    sortKey.value.order = "desc";
+  }
+  emits("sortCheck", { key: sortKey.value.key, order: sortKey.value.order });
 };
 </script>
 
@@ -105,7 +155,6 @@ export default {};
             <td v-for="option in tableConfig" :key="option.key">
               <div class="center" :class="option.style">
                 <li-check
-                  ref="checkedRefs"
                   v-if="option.type == TableType.Checked"
                   :checked="checkedRow[index]"
                   @change="changeRowCheck($event.detail[0], index)"
@@ -121,4 +170,4 @@ export default {};
   </div>
 </template>
 
-<style lang="sass" src="./li-table.scss" scoped></style>
+<style lang="sass" src="./li-table.scss"></style>

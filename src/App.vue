@@ -29,40 +29,62 @@ const table: LiTableConfigItem[] = [
     key: "address",
     width: 200,
   },
+  {
+    name: "年龄",
+    key: "age",
+    width: 100,
+    type: TableType.Sort,
+  },
 ];
-const tableData: any[] = [
+
+let tableData: any[] = [
   {
     date: "2016-05-02",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
     checked: true,
+    age: 20,
   },
   {
     date: "2016-05-04",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
     checked: false,
+    age: 22,
   },
   {
     date: "2016-05-01",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
     checked: false,
+    age: 19,
   },
   {
     date: "2016-05-03",
     name: "王小虎",
     address: "上海市普陀区金沙江路 1518 弄",
     checked: false,
+    age: 25,
   },
 ];
+tableData = tableData.sort((a, b) => {
+  return a.age - b.age;
+});
+const sortKey = {
+  key: "age",
+  order: "asc",
+};
 </script>
 
 <script lang="ts">
 export default {
-  data() {},
+  data() {
+    return;
+  },
   methods: {
-    changeRowCheck(val: any) {},
+    changeRowCheck(val: any) {
+      // console.log(val);
+    },
   },
 };
 </script>
@@ -72,7 +94,9 @@ export default {
     <li-table
       :tableConfig="table"
       :tableData="tableData"
+      :sortKey="sortKey"
       @changeRowCheck="changeRowCheck($event.detail[0])"
+      @sortCheck="changeRowCheck($event.detail[0])"
     ></li-table>
     <li-check label="复选框A"></li-check>
   </div>
@@ -80,7 +104,7 @@ export default {
 
 <style>
 #app {
-  height: 100vh;
+  height: 98vh;
   display: flex;
   justify-content: center;
   align-items: center;
