@@ -2,7 +2,6 @@
 import { defineEmits, ref, reactive } from "vue";
 import type { LiTableConfigItem } from "./li-table.config";
 import { TableType } from "./li-table.config";
-
 const props = defineProps<{
   tableConfig: LiTableConfigItem[];
   tableData: any[];
@@ -160,7 +159,9 @@ export default {};
                   @change="changeRowCheck($event.detail[0], index)"
                 >
                 </li-check>
-                <template v-else> {{ data[option.key] }}</template>
+                <template v-else>
+                  {{ data[option.key] }}
+                </template>
               </div>
             </td>
           </tr>

@@ -14,7 +14,7 @@ export enum TableType {
   Sort = "sort",
   Select = "select",
   Checked = "checked",
-  filter = "filter",
+  Filter = "filter",
   Custom = "custom",
   Unset = "unset",
 }

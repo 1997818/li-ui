@@ -1,8 +1,7 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import {
   type LiTableConfigItem,
   TableType,
-  TableStyle,
 } from "./components/li-table/li-table.config";
 import { register } from "./index";
 
@@ -27,13 +26,19 @@ const table: LiTableConfigItem[] = [
   {
     name: "地址",
     key: "address",
-    width: 200,
+    width: 250,
   },
   {
     name: "年龄",
     key: "age",
     width: 100,
     type: TableType.Sort,
+  },
+  {
+    name: "性别",
+    key: "sex",
+    width: 100,
+    type: TableType.Filter,
   },
 ];
 
@@ -44,6 +49,7 @@ let tableData: any[] = [
     address: "上海市普陀区金沙江路 1518 弄",
     checked: true,
     age: 20,
+    sex: "男",
   },
   {
     date: "2016-05-04",
@@ -51,6 +57,7 @@ let tableData: any[] = [
     address: "上海市普陀区金沙江路 1518 弄",
     checked: false,
     age: 22,
+    sex: "男",
   },
   {
     date: "2016-05-01",
@@ -58,6 +65,7 @@ let tableData: any[] = [
     address: "上海市普陀区金沙江路 1518 弄",
     checked: false,
     age: 19,
+    sex: "女",
   },
   {
     date: "2016-05-03",
@@ -65,6 +73,7 @@ let tableData: any[] = [
     address: "上海市普陀区金沙江路 1518 弄",
     checked: false,
     age: 25,
+    sex: "女",
   },
 ];
 tableData = tableData.sort((a, b) => {
@@ -76,14 +85,18 @@ const sortKey = {
 };
 </script>
 
-<script lang="ts">
+<script lang="tsx">
 export default {
   data() {
     return;
   },
+  mounted() {},
   methods: {
     changeRowCheck(val: any) {
-      // console.log(val);
+      console.log(val);
+    },
+    say(val: any) {
+      console.log(val.getBoundingClientRect());
     },
   },
 };
