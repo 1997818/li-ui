@@ -1,7 +1,10 @@
 <script setup lang="tsx">
-import { defineEmits, ref, reactive } from "vue";
+import { defineEmits, ref, reactive, render, createVNode } from "vue";
 import type { LiTableConfigItem } from "./li-table.config";
 import { TableType } from "./li-table.config";
+import liSelect from "../li-select/li-select.ce.vue";
+
+const liSelectVNode = createVNode(liSelect);
 const props = defineProps<{
   tableConfig: LiTableConfigItem[];
   tableData: any[];
@@ -13,7 +16,11 @@ const props = defineProps<{
 let sortKey = ref(props.sortKey);
 
 const emits = defineEmits(["changeRowCheck", "sortCheck"]);
-let allChecked = ref(props.tableData.every((item) => item.checked === true)); // 全选
+let allChecked = ref(
+  props.tableData.length
+    ? props.tableData.every((item) => item.checked === true)
+    : false
+); // 全选
 let indeterminate = ref(
   props.tableData.some((item) => item.checked === true && !allChecked.value)
 ); // 半选
@@ -63,6 +70,16 @@ const thEle = (props: { item: LiTableConfigItem }) => {
                   : "sort-caret descending"
               }
             ></i>
+          </span>
+        </div>
+      );
+      break;
+    case TableType.Filter:
+      thDom = (
+        <div onClick={($event) => openSelect($event)}>
+          {item.name}
+          <span class={"caret-wrapper"}>
+            <i class={"select sort-caret descending"}></i>
           </span>
         </div>
       );
@@ -124,6 +141,16 @@ const changeSort = (val: LiTableConfigItem) => {
   }
   emits("sortCheck", { key: sortKey.value.key, order: sortKey.value.order });
 };
+
+const openSelect = (val: any) => {
+  const clickX = val.clientX;
+  const clickY = val.clientY;
+  const clickPageX = val.pageX;
+  const clickPageY = val.pageY;
+  liSelectVNode.props = { clickX, clickY };
+  const container = document.createElement("div");
+  render(liSelectVNode, container);
+};
 </script>
 
 <script lang="tsx">
@@ -171,4 +198,4 @@ export default {};
   </div>
 </template>
 
-<style lang="sass" src="./li-table.scss"></style>
+<style lang="scss" src="./li-table.scss"></style>

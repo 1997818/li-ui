@@ -3,9 +3,9 @@ import {
   type LiTableConfigItem,
   TableType,
 } from "./components/li-table/li-table.config";
-import { register } from "./index";
-
-register();
+// import { register } from "./index";
+import liSelectContent from "./components/li-select/li-select-content.ce.vue";
+// register();
 const table: LiTableConfigItem[] = [
   {
     name: "",
