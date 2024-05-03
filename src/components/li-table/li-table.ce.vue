@@ -14,24 +14,24 @@ const props = defineProps<{
   };
 }>();
 let sortKey = ref(props.sortKey);
+let tableData = props.tableData || [];
+let tableConfig = props.tableConfig || [];
 
 const emits = defineEmits(["changeRowCheck", "sortCheck"]);
 let allChecked = ref(
-  props.tableData.length
-    ? props.tableData.every((item) => item.checked === true)
-    : false
+  tableData?.length ? tableData.every((item) => item.checked === true) : false
 ); // 全选
 let indeterminate = ref(
-  props.tableData.some((item) => item.checked === true && !allChecked.value)
+  tableData.some((item) => item.checked === true && !allChecked.value)
 ); // 半选
 let checkedRow: Array<boolean | "disable"> = reactive(
-  props.tableData.map((item) => item.checked)
+  tableData.map((item) => item.checked)
 );
 
 const Colgroup = () => {
   return (
     <colgroup>
-      {props.tableConfig.map((item) => {
+      {tableConfig.map((item) => {
         return <col width={item.width} />;
       })}
     </colgroup>
@@ -90,10 +90,9 @@ const thEle = (props: { item: LiTableConfigItem }) => {
   }
   return thDom;
 };
-let tableData = props.tableData;
 const changeRowCheck = (val: boolean, i: number) => {
   checkedRow[i] = val;
-  const tableData = props.tableData.map((item, i) => {
+  const table = tableData.map((item, i) => {
     item.checked = checkedRow[i];
     return item;
   });
@@ -114,7 +113,7 @@ const changeRowCheck = (val: boolean, i: number) => {
     allChecked.value = false;
     indeterminate.value = true;
   }
-  emits("changeRowCheck", tableData);
+  emits("changeRowCheck", table);
 };
 
 const setAllRowCheck = () => {
@@ -125,11 +124,11 @@ const setAllRowCheck = () => {
       checkedRow[i] = allChecked.value;
     }
   });
-  const tableData = props.tableData.map((item, i) => {
+  const table = tableData.map((item, i) => {
     item.checked = checkedRow[i];
     return item;
   });
-  emits("changeRowCheck", tableData);
+  emits("changeRowCheck", table);
 };
 
 const changeSort = (val: LiTableConfigItem) => {
